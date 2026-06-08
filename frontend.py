@@ -3,21 +3,21 @@ import streamlit as st
 from app.vulnerable_bot import vulnerable_chat
 from app.secure_bot import secure_chat
 
-st.title("AI Jailbreak Security Demo")
+st.title("🔐 AI Security Demo")
 
-mode = st.selectbox(
-    "Choose Bot",
-    ["Secure Bot", "Vulnerable Bot"]
-)
+message = st.text_input("Enter a prompt")
 
-user_input = st.text_area("Enter Prompt")
+if st.button("Send") and message:
 
-if st.button("Send") and user_input:
+    vulnerable_response = vulnerable_chat(message)
+    secure_response = secure_chat(message)
 
-    if mode == "Secure Bot":
-        response = secure_chat(user_input)
-    else:
-        response = vulnerable_chat(user_input)
+    col1, col2 = st.columns(2)
 
-    st.write("### Response")
-    st.write(response)
+    with col1:
+        st.subheader("🚨 Vulnerable Bot")
+        st.write(vulnerable_response)
+
+    with col2:
+        st.subheader("🔒 Secure Bot")
+        st.write(secure_response)
