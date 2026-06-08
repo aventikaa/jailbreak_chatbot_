@@ -1,8 +1,8 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
 
-from app.vulnerable_bot import vulnerable_chat
-from app.secure_bot import secure_chat
+from vulnerable_bot import vulnerable_chat
+from secure_bot import secure_chat
 
 app = FastAPI()
 
