@@ -1,19 +1,23 @@
 import streamlit as st
-import requests
 
-API_URL = "http://localhost:8000"  # change when deployed
+from app.vulnerable_bot import vulnerable_chat
+from app.secure_bot import secure_chat
 
-st.title("Jailbreak Chatbot")
+st.title("AI Jailbreak Security Demo")
 
-mode = st.selectbox("Choose bot", ["secure", "vulnerable"])
-user_input = st.text_input("Enter message")
+mode = st.selectbox(
+    "Choose Bot",
+    ["Secure Bot", "Vulnerable Bot"]
+)
 
-if st.button("Send"):
-    if user_input:
+user_input = st.text_area("Enter Prompt")
 
-        res = requests.post(
-            f"{API_URL}/{mode}",
-            json={"message": user_input}
-        )
+if st.button("Send") and user_input:
 
-        st.write(res.json()["response"])
+    if mode == "Secure Bot":
+        response = secure_chat(user_input)
+    else:
+        response = vulnerable_chat(user_input)
+
+    st.write("### Response")
+    st.write(response)
