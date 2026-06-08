@@ -5,11 +5,18 @@ import os
 from app.guardrails import detect_jailbreak
 
 load_dotenv()
+import streamlit as st
+from groq import Groq
 
-client = Groq(
+def get_client():
     api_key = st.secrets.get("GROQ_API_KEY")
-    client = Groq(api_key=api_key)
-)
+
+    if not api_key:
+        raise ValueError("GROQ_API_KEY missing in Streamlit Secrets")
+
+    return Groq(api_key=api_key)
+
+client = get_client()
 
 BLOCKED = [
     "ignore previous instructions",

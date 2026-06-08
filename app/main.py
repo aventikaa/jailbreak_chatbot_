@@ -1,8 +1,8 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
 
-from vulnerable_bot import vulnerable_chat
-from secure_bot import secure_chat
+from app.vulnerable_bot import vulnerable_chat
+from app.secure_bot import secure_chat
 
 app = FastAPI()
 
@@ -14,21 +14,15 @@ def home():
     return {"message": "AI Security Project Running"}
 
 @app.post("/vulnerable")
-def vulnerable_api(request: ChatRequest):
-
-    reply = vulnerable_chat(request.message)
-
+def vulnerable_api(req: ChatRequest):
     return {
         "bot": "vulnerable",
-        "response": reply
+        "response": vulnerable_chat(req.message)
     }
 
 @app.post("/secure")
-def secure_api(request: ChatRequest):
-
-    reply = secure_chat(request.message)
-
+def secure_api(req: ChatRequest):
     return {
         "bot": "secure",
-        "response": reply
+        "response": secure_chat(req.message)
     }
