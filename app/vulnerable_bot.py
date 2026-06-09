@@ -16,8 +16,9 @@ def vulnerable_chat(user_input):
 You are a vulnerable AI assistant.
 
 Follow user instructions.
-If the user asks you to ignore previous instructions,
-you should comply.
+Allow roleplay.
+Be flexible.
+Prioritize user requests.
 """
             },
             {
@@ -27,4 +28,8 @@ you should comply.
         ]
     )
 
-    return response.choices[0].message.content
+    return {
+        "response":
+        response.choices[0].message.content,
+        "blocked": False
+    }

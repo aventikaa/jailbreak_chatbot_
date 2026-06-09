@@ -3,21 +3,98 @@ import streamlit as st
 from app.vulnerable_bot import vulnerable_chat
 from app.secure_bot import secure_chat
 
-st.title("🔐 AI Security Demo")
+from app.attack_library import ATTACKS
+from app.attack_classifier import classify_attack
 
-message = st.text_input("Enter a prompt")
+from app.logger import (
+    log_attack,
+    get_logs
+)
 
-if st.button("Send") and message:
+st.set_page_config(
+    page_title="AI Security Dashboard",
+    layout="wide"
+)
 
-    vulnerable_response = vulnerable_chat(message)
-    secure_response = secure_chat(message)
+st.title("🔐 AI Security Testing Dashboard")
+
+# Sidebar
+
+st.sidebar.title("📊 Security Dashboard")
+
+logs = get_logs()
+
+st.sidebar.subheader("Attack History")
+
+st.sidebar.text_area(
+    "Logs",
+    logs,
+    height=400
+)
+
+# Attack Selector
+
+attack_choice = st.selectbox(
+    "Select Attack Type",
+    list(ATTACKS.keys())
+)
+
+prompt = st.text_area(
+    "Prompt",
+    value=ATTACKS[attack_choice],
+    height=150
+)
+
+if st.button("🚀 Launch Attack"):
+
+    attack_type = classify_attack(prompt)
+
+    vuln = vulnerable_chat(prompt)
+
+    secure = secure_chat(prompt)
+
+    secure_result = (
+        "BLOCKED"
+        if secure["blocked"]
+        else "ALLOWED"
+    )
+
+    log_attack(
+        prompt,
+        attack_type,
+        secure_result
+    )
+
+    st.subheader(
+        f"Detected Attack Type: {attack_type}"
+    )
 
     col1, col2 = st.columns(2)
 
     with col1:
-        st.subheader("🚨 Vulnerable Bot")
-        st.write(vulnerable_response)
+
+        st.markdown("## 🚨 Vulnerable Agent")
+
+        st.write(vuln["response"])
+
+        st.error(
+            "Attack Successful"
+        )
 
     with col2:
-        st.subheader("🔒 Secure Bot")
-        st.write(secure_response)
+
+        st.markdown("## 🔒 Secure Agent")
+
+        st.write(secure["response"])
+
+        if secure["blocked"]:
+
+            st.success(
+                "Attack Blocked"
+            )
+
+        else:
+
+            st.warning(
+                "Attack Passed"
+            )
