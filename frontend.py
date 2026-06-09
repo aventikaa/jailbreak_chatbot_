@@ -16,7 +16,7 @@ st.set_page_config(
     layout="wide"
 )
 
-st.title("🛡️ Prompt Injection Defense Simulator")
+st.title("AI Security Demo w/ Logging and Attack Classification")
 
 # -------------------
 # Sidebar
@@ -24,7 +24,7 @@ st.title("🛡️ Prompt Injection Defense Simulator")
 
 with st.sidebar:
 
-    st.header("📜 Attack History")
+    st.header("Attack History")
 
     st.text_area(
         "Logs",
@@ -50,7 +50,7 @@ message = st.text_area(
 # Launch
 # -------------------
 
-if st.button("🚀 Launch Attack"):
+if st.button("Send Prompt"):
 
     attack_type = classify_attack(message)
 
@@ -95,18 +95,20 @@ if st.button("🚀 Launch Attack"):
 
     with col2:
 
-        st.subheader("🔒 Secure Bot")
+    st.subheader("🔒 Secure Bot")
 
-        st.write(secure["response"])
+    st.write(
+        secure["response"]
+    )
 
-        if secure_blocked:
+    if secure["blocked"]:
 
-            st.success(
-                "Attack Blocked"
-            )
+        st.success(
+            "🛡️ Attack Blocked"
+        )
 
-        else:
+    else:
 
-            st.warning(
-                "Attack Passed"
-            )
+        st.warning(
+            "⚠️ Attack Passed"
+        )
