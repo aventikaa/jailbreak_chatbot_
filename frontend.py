@@ -55,7 +55,7 @@ if st.button("Send Prompt"):
     attack_type = classify_attack(message)
 
     st.info(
-        f"Detected Attack Type: {attack_type}"
+        f"Detected Prompt Type: {attack_type}"
     )
 
     vuln = vulnerable_chat(message)
@@ -104,5 +104,5 @@ if st.button("Send Prompt"):
             )
         else:
             st.warning(
-            "⚠️ Attack Passed"
+            " 📩 Prompt Passed"
             )
