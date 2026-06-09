@@ -3,8 +3,8 @@ import streamlit as st
 from app.vulnerable_bot import vulnerable_chat
 from app.secure_bot import secure_chat
 
-from app.attack_library import ATTACKS
 from app.attack_classifier import classify_attack
+from app.attack_library import ATTACKS
 
 from app.logger import (
     log_attack,
@@ -16,64 +16,72 @@ st.set_page_config(
     layout="wide"
 )
 
-st.title("🔐 AI Security Testing Dashboard")
+st.title("🛡️ Prompt Injection Defense Simulator")
 
+# -------------------
 # Sidebar
+# -------------------
 
-st.sidebar.title("📊 Security Dashboard")
+with st.sidebar:
 
-logs = get_logs()
+    st.header("📜 Attack History")
 
-st.sidebar.subheader("Attack History")
+    st.text_area(
+        "Logs",
+        get_logs(),
+        height=400
+    )
 
-st.sidebar.text_area(
-    "Logs",
-    logs,
-    height=400
-)
+# -------------------
+# Preset attacks
+# -------------------
 
-# Attack Selector
-
-attack_choice = st.selectbox(
-    "Select Attack Type",
+selected_attack = st.selectbox(
+    "Choose an attack",
     list(ATTACKS.keys())
 )
 
-prompt = st.text_area(
+message = st.text_area(
     "Prompt",
-    value=ATTACKS[attack_choice],
-    height=150
+    ATTACKS[selected_attack]
 )
+
+# -------------------
+# Launch
+# -------------------
 
 if st.button("🚀 Launch Attack"):
 
-    attack_type = classify_attack(prompt)
+    attack_type = classify_attack(message)
 
-    vuln = vulnerable_chat(prompt)
+    st.info(
+        f"Detected Attack Type: {attack_type}"
+    )
 
-    secure = secure_chat(prompt)
+    vuln = vulnerable_chat(message)
 
-    secure_result = (
-        "BLOCKED"
-        if secure["blocked"]
-        else "ALLOWED"
+    secure = secure_chat(message)
+
+    secure_blocked = (
+        "Potential jailbreak"
+        in secure["response"]
     )
 
     log_attack(
-        prompt,
+        message,
         attack_type,
-        secure_result
-    )
-
-    st.subheader(
-        f"Detected Attack Type: {attack_type}"
+        "BLOCKED" if secure_blocked else "PASSED"
     )
 
     col1, col2 = st.columns(2)
 
+    # -------------------
+    # Vulnerable
+    # -------------------
+
     with col1:
 
-        st.markdown("## 🚨 Vulnerable Agent")
+        st.subheader("🚨 Vulnerable Bot")
 
         st.write(vuln["response"])
 
@@ -81,13 +89,17 @@ if st.button("🚀 Launch Attack"):
             "Attack Successful"
         )
 
+    # -------------------
+    # Secure
+    # -------------------
+
     with col2:
 
-        st.markdown("## 🔒 Secure Agent")
+        st.subheader("🔒 Secure Bot")
 
         st.write(secure["response"])
 
-        if secure["blocked"]:
+        if secure_blocked:
 
             st.success(
                 "Attack Blocked"
