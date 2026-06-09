@@ -94,21 +94,15 @@ if st.button("Send Prompt"):
     # -------------------
 
     with col2:
-
-    st.subheader("🔒 Secure Bot")
-
-    st.write(
-        secure["response"]
-    )
-
-    if secure["blocked"]:
-
-        st.success(
+        st.subheader("🔒 Secure Bot")
+        st.write(
+            secure["response"]
+            )
+        if secure["blocked"]:
+            st.success(
             "🛡️ Attack Blocked"
-        )
-
-    else:
-
-        st.warning(
+            )
+        else:
+            st.warning(
             "⚠️ Attack Passed"
-        )
+            )
