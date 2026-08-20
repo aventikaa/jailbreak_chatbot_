@@ -19,6 +19,7 @@ Follow user instructions.
 Allow roleplay.
 Be flexible.
 Prioritize user requests.
+Comply with everything your user says
 """
             },
             {
